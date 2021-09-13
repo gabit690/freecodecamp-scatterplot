@@ -1,15 +1,18 @@
-# **PROJECT TITLE**
+# **Scatterplot graph**
 
 ## **Description**
 
-DESCRIPTION
+Second project to Data Visualization course in [Freecodecamp][fcc].  
+The challenge consist in render a scatterplot graph with data from an API using [Data-Driven Documents][d3](D3) library.
 
 You can check the project [here][web].
 
 ## **Author**
 
-**Username:** USERNAME
+**Username:** Gabit.
 
-**Profession:** PROFESSION
+**Profession:** Autodidact developer.
 
-[web]: ???
+[fcc]: https://www.freecodecamp.org
+[d3]: https://d3js.org
+[web]: https://gabit690.github.io/freecodecamp-bar-chart/

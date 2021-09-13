@@ -6,6 +6,7 @@
 header h1 {
     text-align: center;
     text-decoration: underline;
+    text-transform: capitalize;
 }
 
 footer {
