@@ -9,6 +9,22 @@ header h1 {
     text-transform: capitalize;
 }
 
+body {
+    background-color: steelblue;
+}
+
+.container {
+    outline: 5px solid white;
+    width: 800px;
+    height: 400px;
+    margin: 50px auto;
+}
+
+#title {
+    text-align: center;
+    text-transform: capitalize;
+}
+
 footer {
     position: absolute;
     bottom: 0;
