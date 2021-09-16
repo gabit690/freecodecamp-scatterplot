@@ -14,15 +14,20 @@ body {
 }
 
 .container {
-    outline: 5px solid white;
     width: 800px;
     margin: 50px auto;
-    background-color: yellowgreen;
+    background-color: whitesmoke;
 }
 
 #title {
     text-align: center;
     text-transform: capitalize;
+}
+
+.dot {
+    fill: sandybrown;
+    stroke: #000;
+    opacity: 0.8;
 }
 
 footer {

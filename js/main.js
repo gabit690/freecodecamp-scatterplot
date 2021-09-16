@@ -33,8 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     d3functions.setStyles(svg, {
         display: "block",
-        margin: "auto",
-        background_color: "green"
+        margin: "auto"
     });
 
     // Get Data

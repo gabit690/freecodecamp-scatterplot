@@ -22,7 +22,7 @@ const createCartesianAxis = (axisType = "x", axisScale) => {
 
 const applyCartesianAxis = (d3Element = {}, type = "x", cartesianAxis = null) => {
     if (cartesianAxis != null && /[xy]/i.test(type)) {
-        let padding = d3Element.attr("width") / 20;
+        let padding = d3Element.attr("width") / 15;
         let height = d3Element.attr("height");
         let axis = d3Element.append("g");
         axis.attr("id", (type == "x") ? "x-axis" : "y-axis");
@@ -68,25 +68,26 @@ const renderAxis = (container = {}, xScale = {}, yScale = {}) => {
     applyCartesianAxis(container, "y", yAxis);
 }
 
-const renderBars = (container = {}, dataset = [], xScale = {}, yScale = {}) => {
-        // bind data with bars
-        const width = container.attr("width");
-        const height = container.attr("height");
-        const padding = width / 20;
-        let firstYear = parseInt(dataset[0][0]);
-        let secondYear = firstYear + 1;
-        let barWidth = (xScale(secondYear) - xScale(firstYear)) / 4;
-        container.selectAll("rect")
+const renderDots = (container = {}, dataset = [], xScale = {}, yScale = {}) => {
+        // bind data with Dots
+        const WIDTH = container.attr("width");
+        const HEIGHT = container.attr("height");
+        console.log("Width: " + WIDTH);
+        console.log("height: " + HEIGHT);
+        let dotWidth = 7;
+
+        container.selectAll("circle")
                  .data(dataset)
                  .enter()
-                 .append("rect")
-                 .attr("class", "bar")
-                 .attr("x", (d, i) => padding + (i * barWidth))
-                 .attr("y", (d, i) => yScale(d[1]))
-                 .attr("data-date", (d, i) => d[0])
-                 .attr("data-gdp", (d, i) => d[1])
-                 .attr("width", barWidth)
-                 .attr("height", (d, i) => (height - padding) - (yScale(d[1])));
+                 .append("circle")
+                 .attr("class", "dot")
+                 .attr("cx", (d, i) => xScale((d["Year"])))
+                 .attr("cy", (d, i) => yScale(getSeconds(d["Time"])))
+                 .attr("r", dotWidth)
+                 .attr("data-xvalue", (d, i) => d["Year"])
+                 .attr("data-yvalue", (d, i) => new Date(d["Year"]  + " 00:" + d["Time"]));
+                //  .attr("width", dotWidth)
+                //  .attr("height", (d, i) => (HEIGHT - PADDING) - (yScale(d[1])));
 }
 
 const renderTooltip = (container = "body") => {
@@ -152,20 +153,25 @@ export default {
         // Axis
         const WIDTH = svgElement.attr("width");
         const HEIGHT = svgElement.attr("height");
-        const PADDING = WIDTH / 20;
+        const PADDING = WIDTH / 15;
         let xDomain = getCartesianDomain("x", dataset);
         xDomain[0] -= 1;
         xDomain[1] += 1;
         const xScale = createScaleLinear(xDomain, [PADDING, WIDTH - PADDING]);
         let yDomain = getCartesianDomain("y", dataset);
-        // yDomain[1] += 120;
         const yScale = createScaleLinear(yDomain, [PADDING, HEIGHT - PADDING]);
-        yScale.ticks(0, 100, 10);
+     
         renderAxis(svgElement, xScale, yScale);
         
         // Bind Data
-        // renderBars(svgElement, dataset, xScale, yScale);
+        renderDots(svgElement, dataset, xScale, yScale);
 
+        svgElement.append("text")
+                  .attr("id", "legend")
+                  .attr("x", -300)
+                  .attr("y", 13)
+                  .style("transform", "rotate(-90deg)")
+                  .text("Time in minutes");
         // tooltip
         // renderTooltip("main");
     }
