@@ -5,17 +5,24 @@ const createScaleLinear = (domain = [], range = []) => {
 }
 
 const createCartesianAxis = (axisType = "x", axisScale) => {
+    let formatMinutes = function(d) { 
+        let minutes = Math.floor((d  / 60)),
+            seconds = d - (minutes * 60);
+        let output = ((minutes < 10) ? "0" + minutes: minutes) + ':' + ((seconds < 10) ? "0" + seconds: seconds);
+        return output;
+    };
+    
     if (/^[xy]$/i.test(axisType)) {
         return (axisType === "x") ? 
                     d3.axisBottom(axisScale).tickFormat(d3.format(""))
                     :
-                    d3.axisLeft(axisScale);
+                    d3.axisLeft(axisScale).tickFormat(formatMinutes);
     }
 }
 
 const applyCartesianAxis = (d3Element = {}, type = "x", cartesianAxis = null) => {
     if (cartesianAxis != null && /[xy]/i.test(type)) {
-        let padding = d3Element.attr("width") / 10;
+        let padding = d3Element.attr("width") / 20;
         let height = d3Element.attr("height");
         let axis = d3Element.append("g");
         axis.attr("id", (type == "x") ? "x-axis" : "y-axis");
@@ -28,16 +35,25 @@ const applyCartesianAxis = (d3Element = {}, type = "x", cartesianAxis = null) =>
     }
 }
 
+const getSeconds = (stringMinutes = "") => {
+    let seconds = 0;
+    if (/^(\d\d):(\d\d)$/.test(stringMinutes)) {
+        seconds = (Number(stringMinutes.slice(0,2)) * 60) + Number(stringMinutes.slice(3,5));
+    }
+    return seconds;
+}
+
 const getCartesianDomain = (axisType = "x", dataset = []) => {
     const domainResult = [0, 0];
     if (/^[xy]$/i.test(axisType)) {
         switch (axisType) {
             case "x":
-                domainResult[0] = d3.min(dataset, (d) => parseInt(d[0]));
-                domainResult[1] = d3.max(dataset, (d) => parseInt(d[0]));
+                domainResult[0] = d3.min(dataset, (d) => d["Year"]);
+                domainResult[1] = d3.max(dataset, (d) => d["Year"]);
                 break;
             case "y":
-                domainResult[1] = d3.max(dataset, (d) => d[1]);
+                domainResult[0] = d3.min(dataset, (d) => getSeconds(d["Time"]));
+                domainResult[1] = d3.max(dataset, (d) => getSeconds(d["Time"]));
                 break;
         }
     }
@@ -48,6 +64,7 @@ const renderAxis = (container = {}, xScale = {}, yScale = {}) => {
     const xAxis = createCartesianAxis("x", xScale);
     applyCartesianAxis(container, "x", xAxis);
     const yAxis = createCartesianAxis("y", yScale);
+ 
     applyCartesianAxis(container, "y", yAxis);
 }
 
@@ -55,7 +72,7 @@ const renderBars = (container = {}, dataset = [], xScale = {}, yScale = {}) => {
         // bind data with bars
         const width = container.attr("width");
         const height = container.attr("height");
-        const padding = width / 10;
+        const padding = width / 20;
         let firstYear = parseInt(dataset[0][0]);
         let secondYear = firstYear + 1;
         let barWidth = (xScale(secondYear) - xScale(firstYear)) / 4;
@@ -130,24 +147,26 @@ export default {
             });
         }
     },
-    renderBarChart: (d3Element = {}, dataset = []) => {
+    renderScartterplot: (svgElement = {}, dataset = []) => {
 
         // Axis
-        const width = d3Element.attr("width");
-        const height = d3Element.attr("height");
-        const padding = width / 10;
+        const WIDTH = svgElement.attr("width");
+        const HEIGHT = svgElement.attr("height");
+        const PADDING = WIDTH / 20;
         let xDomain = getCartesianDomain("x", dataset);
+        xDomain[0] -= 1;
         xDomain[1] += 1;
-        const xScale = createScaleLinear(xDomain, [padding, width - padding]);
+        const xScale = createScaleLinear(xDomain, [PADDING, WIDTH - PADDING]);
         let yDomain = getCartesianDomain("y", dataset);
-        yDomain[1] += 1000;
-        const yScale = createScaleLinear(yDomain, [height - padding, padding]);
-        renderAxis(d3Element, xScale, yScale);
+        // yDomain[1] += 120;
+        const yScale = createScaleLinear(yDomain, [PADDING, HEIGHT - PADDING]);
+        yScale.ticks(0, 100, 10);
+        renderAxis(svgElement, xScale, yScale);
         
         // Bind Data
-        renderBars(d3Element, dataset, xScale, yScale);
+        // renderBars(svgElement, dataset, xScale, yScale);
 
         // tooltip
-        renderTooltip("main");
+        // renderTooltip("main");
     }
 };

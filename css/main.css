@@ -16,8 +16,8 @@ body {
 .container {
     outline: 5px solid white;
     width: 800px;
-    height: 400px;
     margin: 50px auto;
+    background-color: yellowgreen;
 }
 
 #title {
