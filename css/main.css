@@ -17,6 +17,7 @@ body {
     width: 800px;
     margin: 50px auto;
     background-color: whitesmoke;
+    position: relative;
 }
 
 #title {
@@ -28,6 +29,17 @@ body {
     fill: sandybrown;
     stroke: #000;
     opacity: 0.8;
+}
+
+#tooltip {
+    position: absolute;
+    display: none;
+    width: 100px;
+    padding: 10px 0px;
+    top: 0;
+    left: 0;
+    border-radius: 10px;
+    background-color: rgb(114, 219, 184);
 }
 
 footer {

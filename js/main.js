@@ -1,7 +1,6 @@
 import d3functions from "./d3functions.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    // main scrips
 
     // Graph container
     const graphContainer = d3functions.createElement("main", "div");
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     d3functions.setTextContent(title, "doping in professional bicycle racing");
 
     // Svg element
-
     const svg = d3functions.renderElement(graphContainer, "svg");
 
     d3functions.setAttributes(svg, {
@@ -39,8 +37,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get Data
     const url = "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json";
     fetch(url).then(response => response.json())
-              .then(data => {
-                  console.log(data);
-                  d3functions.renderScartterplot(svg, data);
-                });
+              .then(data => d3functions.renderScartterplot(svg, data));
 });

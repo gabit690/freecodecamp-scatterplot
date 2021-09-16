@@ -64,7 +64,6 @@ const renderAxis = (container = {}, xScale = {}, yScale = {}) => {
     const xAxis = createCartesianAxis("x", xScale);
     applyCartesianAxis(container, "x", xAxis);
     const yAxis = createCartesianAxis("y", yScale);
- 
     applyCartesianAxis(container, "y", yAxis);
 }
 
@@ -86,8 +85,6 @@ const renderDots = (container = {}, dataset = [], xScale = {}, yScale = {}) => {
                  .attr("r", dotWidth)
                  .attr("data-xvalue", (d, i) => d["Year"])
                  .attr("data-yvalue", (d, i) => new Date(d["Year"]  + " 00:" + d["Time"]));
-                //  .attr("width", dotWidth)
-                //  .attr("height", (d, i) => (HEIGHT - PADDING) - (yScale(d[1])));
 }
 
 const renderTooltip = (container = "body") => {
@@ -98,17 +95,22 @@ const renderTooltip = (container = "body") => {
 
     const tooltip = document.getElementById("tooltip");
 
-    const bars = document.getElementsByTagName("rect");
+    const dots = document.getElementsByTagName("circle");
 
-    bars.forEach(bar => {
-        bar.addEventListener("mouseover", () => {
+    dots.forEach(dot => {
+        dot.addEventListener("mouseover", () => {
             tooltip.style.display = "block";
-            let date = bar.getAttribute("data-date");
-            let amount = bar.getAttribute("data-gdp");
-            tooltip.setAttribute("data-date", date);
-            tooltip.innerHTML = `<p>${date}</p><br><p>$${amount} Billion</p>`;
+            let year = dot.getAttribute("data-xvalue");
+            let time = new Date(dot.getAttribute("data-yvalue"));
+            let minutes = time.getMinutes();
+            let seconds = (time.getSeconds() > 9) ? time.getSeconds() : "0" + time.getSeconds();
+            tooltip.setAttribute("data-year", year);
+            tooltip.style.top = (dot.getAttribute("cy"))+"px";
+            tooltip.style.left = (dot.getAttribute("cx"))+"px";
+            tooltip.style.transform = "translate(10px, 0px)";
+            tooltip.innerHTML = `<p>Year: ${year}</p><br><p>Time: ${minutes}:${seconds}</p>`;
         });
-        bar.addEventListener("mouseout", () => {
+        dot.addEventListener("mouseout", () => {
             tooltip.style.display = "none";
         });
     });
@@ -172,7 +174,8 @@ export default {
                   .attr("y", 13)
                   .style("transform", "rotate(-90deg)")
                   .text("Time in minutes");
+
         // tooltip
-        // renderTooltip("main");
+        renderTooltip("div");
     }
 };
